@@ -13,7 +13,7 @@ import utils.TipoVid;
 @Table(name= "vid")
 public class Vid {
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Column(name = "id", unique = true, nullable = true)
 	private int id;
 	@Column(name = "tipo_vid", nullable = true)
