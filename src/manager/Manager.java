@@ -1,7 +1,8 @@
 package manager;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Random;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -87,15 +88,16 @@ public class Manager {
 	}
 
 	private void addVid(String[] split) {
-		Vid v = new Vid(TipoVid.valueOf(split[1].toUpperCase()), Integer.parseInt(split[2]));
-		tx = session.beginTransaction();
-		session.save(v);
-		
-		c.addVid(v);
-		session.save(c);
-		
-		tx.commit();
-		
+	    Random random = new Random();
+	    BigDecimal randomValue = BigDecimal.valueOf(1 + (1000 - 1) * random.nextDouble());
+	    Vid v = new Vid(TipoVid.valueOf(split[1].toUpperCase()), Integer.parseInt(split[2]), randomValue);
+	    tx = session.beginTransaction();
+	    session.save(v);
+
+	    c.addVid(v);
+	    session.save(c);
+
+	    tx.commit();
 	}
 
 	private void addCampo(String[] split) {
