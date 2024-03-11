@@ -46,6 +46,7 @@ public class Manager {
 		getEntrada();
 		manageActions();
 		showAllCampos();
+		showSumOfPrices();
 		session.close();
 	}
 
@@ -137,6 +138,21 @@ public class Manager {
 		}
 		tx.commit();
 	}
+	
+	private void showSumOfPrices() {
+	    tx = session.beginTransaction();
+	    Query q = session.createQuery("select sum(v.price) from Vid v");
+	    BigDecimal sum = (BigDecimal) q.uniqueResult();
+	    
+	    if (sum != null) {
+	        System.out.println("------------------------------------Suma de precios de todas las Vid: " + sum +"€");
+	    } else {
+	        System.out.println("No hay Vids en la base de datos.");
+	    }
+	    
+	    tx.commit();
+	}
+
 
 	
 }
