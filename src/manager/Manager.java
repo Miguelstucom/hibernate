@@ -89,9 +89,9 @@ public class Manager {
 	}
 
 	private void addVid(String[] split) {
-	    Random random = new Random();
-	    BigDecimal randomValue = BigDecimal.valueOf(1 + (1000 - 1) * random.nextDouble());
-	    Vid v = new Vid(TipoVid.valueOf(split[1].toUpperCase()), Integer.parseInt(split[2]), randomValue);
+	    String[] parts = split[3].split(" ");
+	    BigDecimal valor = new BigDecimal(parts[0].replace(",", "."));
+	    Vid v = new Vid(TipoVid.valueOf(split[1].toUpperCase()), Integer.parseInt(split[2]), valor);
 	    tx = session.beginTransaction();
 	    session.save(v);
 
@@ -100,6 +100,7 @@ public class Manager {
 
 	    tx.commit();
 	}
+
 
 	private void addCampo(String[] split) {
 		c = new Campo(b);
