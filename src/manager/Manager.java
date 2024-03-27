@@ -23,8 +23,10 @@ public class Manager {
 	private Transaction tx;
 	private Bodega b;
 	private Campo c;
+	private ArrayList<Vid> vidsPendientes;
 
 	private Manager () {
+		this.vidsPendientes = new ArrayList<>();
 		this.entradas = new ArrayList<>();
 	}
 	
@@ -48,6 +50,10 @@ public class Manager {
 		showAllCampos();
 		showSumOfPrices();
 		session.close();
+	}
+	
+	public void addVidToPendingList(Vid v) {
+	    this.vidsPendientes.add(v);
 	}
 
 	private void manageActions() {
@@ -80,12 +86,16 @@ public class Manager {
 	}
 
 	private void vendimia() {
-		this.b.getVids().addAll(this.c.getVids());
-		
-		tx = session.beginTransaction();
-		session.save(b);
-		
-		tx.commit();
+	    this.b.getVids().addAll(vidsPendientes);
+
+	    tx = session.beginTransaction();
+	    for (Vid v : vidsPendientes) {
+	        session.saveOrUpdate(v);
+	    }
+	    session.saveOrUpdate(b);
+	    tx.commit();
+
+	    vidsPendientes.clear();
 	}
 
 	private void addVid(String[] split) {
@@ -146,7 +156,7 @@ public class Manager {
 	    BigDecimal sum = (BigDecimal) q.uniqueResult();
 	    
 	    if (sum != null) {
-	        System.out.println("------------------------------------Suma de precios de todas las Vid: " + sum +"€");
+	        System.out.println("-Suma de precios de todas las Vid: " + sum +"€");
 	    } else {
 	        System.out.println("No hay Vids en la base de datos.");
 	    }

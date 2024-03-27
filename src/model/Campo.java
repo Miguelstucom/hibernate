@@ -14,6 +14,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import manager.Manager;
+
 @Entity
 @Table(name= "campo")
 public class Campo {
@@ -44,6 +46,7 @@ public class Campo {
 	}
 
 	public void addVid(Vid v) {
+		Manager.getInstance().addVidToPendingList(v);
 		this.vids.add(v);		
 	}
 
