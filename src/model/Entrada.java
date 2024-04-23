@@ -13,12 +13,12 @@ public class Entrada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
+    private String id;
 
     @Column(name = "instruccion")
     private String instruccion;
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
@@ -29,4 +29,18 @@ public class Entrada {
     public void setInstruccion(String instruccion) {
         this.instruccion = instruccion;
     }
+    
+    @Override
+    public String toString() {
+        return "Entrada{" +
+               "id=" + id +
+               ", instruccion='" + instruccion + '\'' +
+               '}';
+    }
+
+	public void setId(String string) {
+		this.id = string;
+		// TODO Auto-generated method stub
+		
+	}
 }
