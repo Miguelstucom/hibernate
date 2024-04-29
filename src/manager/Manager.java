@@ -11,11 +11,13 @@ import java.util.regex.Pattern;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.bson.types.Decimal128;
+import static com.mongodb.client.model.Filters.eq;
 import org.bson.types.ObjectId;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.internal.build.AllowSysOut;
 import org.hibernate.query.Query;
 
 import com.mongodb.MongoClient;
@@ -124,7 +126,7 @@ public class Manager {
 					addVid(entrada.getInstruccion().split(" "));
 					break;
 				case "#":
-					// vendimia();
+					vendimia();
 					break;
 				default:
 					System.out.println("Instruccion incorrecta");
@@ -139,20 +141,27 @@ public class Manager {
 	}
 
 	private void vendimia() {
-		this.b.getVids().addAll(this.c.getVids());
-
-		tx = session.beginTransaction();
-		session.save(b);
-
-		tx.commit();
+	    MongoCollection<Document> vidsCollection = database.getCollection("Vids");
+	    MongoCollection<Document> camposCollection = database.getCollection("Campos");
+	    MongoCollection<Document> bodegasCollection = database.getCollection("Bodegas");
+	    Document campoAnterior = camposCollection.find().sort(Sorts.descending("_id")).first();
+	    ObjectId bodegaIdAnterior = campoAnterior.getObjectId("id_bodega");
+	    Document bodega = bodegasCollection.find(eq("_id", bodegaIdAnterior)).first();
+	    List<Document> vids = new ArrayList<>();
+	    vidsCollection.find().into(vids);
+	    for (Document doc : vids) {
+	        if (!doc.containsKey("bodega")) {
+	            vidsCollection.updateOne(
+	                new Document("_id", doc.getObjectId("_id")),
+	                new Document("$set", new Document("bodega", bodega))
+	            );
+	        }
+	    }
 	}
 
-	private void addBodega(String[] split) {
-		Document bodega = new Document("nombre", split[1]);
-		collection = database.getCollection("Bodegas");
-		collection.insertOne(bodega);
-		System.out.println("Bodega añadida con éxito: " + bodega.toJson());
-	}
+
+
+
 
 	private void addCampo(String[] split) {
 		collection = database.getCollection("Bodegas");
@@ -166,6 +175,14 @@ public class Manager {
 		} else {
 			System.out.println("No se encontro ninguna Bodega en la base de datos.");
 		}
+	}
+	
+
+	private void addBodega(String[] split) {
+		Document bodega = new Document("nombre", split[1]);
+		collection = database.getCollection("Bodegas");
+		collection.insertOne(bodega);
+		System.out.println("Bodega añadida con éxito: " + bodega.toJson());
 	}
 
 	private void addVid(String[] split) {
