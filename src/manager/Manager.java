@@ -52,6 +52,7 @@ public class Manager {
 	ArrayList<Entrada> inputs = new ArrayList<>();
 
 	private Manager() {
+
 		this.entradas = new ArrayList<>();
 	}
 
@@ -110,6 +111,8 @@ public class Manager {
 			closeConnection();
 		}
 	}
+	
+
 
 	private void manageActions() {
 		for (Entrada entrada : this.inputs) {
@@ -141,6 +144,7 @@ public class Manager {
 	}
 
 	private void vendimia() {
+
 	    MongoCollection<Document> vidsCollection = database.getCollection("Vids");
 	    MongoCollection<Document> camposCollection = database.getCollection("Campos");
 	    MongoCollection<Document> bodegasCollection = database.getCollection("Bodegas");
@@ -185,6 +189,7 @@ public class Manager {
 		System.out.println("Bodega añadida con éxito: " + bodega.toJson());
 	}
 
+
 	private void addVid(String[] split) {
 	    collection = database.getCollection("Campos");
 	    Document campo = collection.find().sort(Sorts.descending("_id")).first();
@@ -195,6 +200,7 @@ public class Manager {
 	                       .append("campo", campo);
 	        collection = database.getCollection("Vids");
 	        collection.insertOne(vid);
+
 	    } else {
 	        System.out.println("Campo no encontrado: " + split[4]);
 	    }
