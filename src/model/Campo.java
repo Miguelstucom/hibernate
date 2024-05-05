@@ -46,7 +46,6 @@ public class Campo {
 	}
 
 	public void addVid(Vid v) {
-		Manager.getInstance().addVidToPendingList(v);
 		this.vids.add(v);		
 	}
 
